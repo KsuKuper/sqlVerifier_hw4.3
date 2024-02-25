@@ -35,7 +35,6 @@ jobs:
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
           postman login --with-api-key PMAK-65daf2ab7a16010001c276a6-a4a160b7e83499af0e431419c98ccd028f
           postman collection run "20300544-b7a3b19e-7b37-46cf-be67-035a2e371d34"
-          name: Run Collection at Current Time
           on: 
           schedule:
           - cron: '0 0 * * *'
