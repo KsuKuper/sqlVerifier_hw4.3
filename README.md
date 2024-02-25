@@ -5,4 +5,4 @@ Repo with Postman tests
 
 [Tab Actions: :white_check_mark:](https://github.com/KsuKuper/sqlVerifier_hw4.3.1/actions)
 
-![CI](https://github.com/KsuKuper/sqlVerifier_hw4.3.1/actions/badge.svg)
+![CI](https://github.com/KsuKuper/sqlVerifier_hw4.3.1/actions)
