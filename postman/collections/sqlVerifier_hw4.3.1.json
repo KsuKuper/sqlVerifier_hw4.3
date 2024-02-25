@@ -1,0 +1,545 @@
+{
+	"info": {
+		"_postman_id": "b7a3b19e-7b37-46cf-be67-035a2e371d34",
+		"name": "sqlVerifier_hw4.3.1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "20300544-b7a3b19e-7b37-46cf-be67-035a2e371d34"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fe406eae-3643-4505-8b48-885672b1d26b",
+						"exec": [
+							"let jsonBody = pm.response.json();",
+							"pm.collectionVariables.set(\"id_token\", jsonBody.id_token);",
+							"",
+							"console.log(jsonBody?.title);",
+							"pm.iterationData.set(\"title\", jsonBody?.title);",
+							"console.log(jsonBody?.text);",
+							"pm.iterationData.set(\"text\", jsonBody?.text);",
+							"console.log(jsonBody?.answer);",
+							"pm.iterationData.set(\"answer\", jsonBody?.answer);",
+							"console.log(jsonBody?.responseCode);",
+							"pm.iterationData.set(\"responseCode\", 201);",
+							"console.log(jsonBody?.responseMessage);",
+							"pm.iterationData.set(\"responseMessage\", \"Created\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "456d94f0-d9a8-4528-bda7-4e4352bcb061",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json, text/plain, */*"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,it-IT;q=0.8,it;q=0.7,fr-FR;q=0.6,fr;q=0.5,de-DE;q=0.4,de;q=0.3,ru;q=0.2"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Origin",
+						"value": "https://sqlverifier-50d286d70656.herokuapp.com"
+					},
+					{
+						"key": "Referer",
+						"value": "https://sqlverifier-50d286d70656.herokuapp.com/login"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty"
+					},
+					{
+						"key": "Sec-Fetch-Mode",
+						"value": "cors"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-origin"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"macOS\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{adminLogin}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"rememberMe\": false\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/authenticate",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create a task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1480af0-3b5c-4dbf-a5e4-bcc79cb5318f",
+						"exec": [
+							"let jsonBody = pm.response.json();",
+							"",
+							"pm.collectionVariables.set(\"id\", jsonBody.id);",
+							"",
+							"pm.test(\"Response status code is 201\", function () {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Response has required fields\", function () {",
+							"  pm.expect(jsonBody).to.have.property('id');",
+							"  pm.expect(jsonBody).to.have.property('text');",
+							"  pm.expect(jsonBody).to.have.property('answer');",
+							"  pm.expect(jsonBody).to.have.property('title');",
+							"});",
+							"pm.test(\"ID is a non-negative integer\", function () {",
+							"  pm.expect(jsonBody.id).to.be.a('number');",
+							"  pm.expect(jsonBody.id).to.be.above(-1);",
+							"});",
+							"pm.test(\"Response time is less than 500ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "2832d5c1-3714-4e51-b452-aaa8c2d1261d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Did you create a new task?\",\n    \"text\": \"Did you create a new task?\",\n    \"answer\": \"I created a new task\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tasks",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change task text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "317aa840-182c-45b8-842c-b339acb7d403",
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Id is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.id).to.be.a('number').and.to.be.at.least(0);",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.text).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Text should not be empty\");",
+							"    pm.expect(responseData.title).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Title should not be empty\");",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.answer).to.satisfy((answer) => {",
+							"        return typeof answer === 'string' || answer === null;",
+							"    }, \"Answer should be a non-empty string or null\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "169fd6eb-c3d1-4992-9de2-1f93d095f57e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": {{id}},\n  \"text\": \"Will you create one more task?\",\n  \"answer\": \"I will continue to create task number is {{id}} + 1\",\n  \"title\": \"Create a new task\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tasks/{{id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tasks",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get task after patch update",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6ff083eb-da08-4beb-8b92-bb58d3c66386",
+						"exec": [
+							"pm.collectionVariables.get(\"id\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "62ad2d1b-9663-4d90-8df8-58fbd4ef71d2",
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status code name has string\", function () {",
+							"    pm.response.to.have.status(\"OK\");",
+							"});",
+							"",
+							"pm.test(\"Response is an object with id, text, answer, and title properties\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object').that.has.all.keys('id', 'text', 'answer', 'title');",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "76edc9b3-87a8-44c5-b525-85e65b5afa9a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/tasks/{{id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tasks",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete task_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "267df667-138e-4a5b-9c7f-12c0383028ea",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3084d220-bddc-47c8-8541-abe89d4efa0e",
+						"exec": [
+							"pm.collectionVariables.get(\"id\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "fe8ab965-f200-42b2-a5b8-5896408e98b9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/tasks/{{id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tasks",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get tasks list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "25395fac-20dd-435e-a2cb-371387964d86",
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response is an array of objects\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+							"    jsonData.forEach(function(task) {",
+							"        pm.expect(task).to.be.an('object').that.has.all.keys('id', 'text', 'answer', 'title');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"pm.test(\"Each task object has a non-negative integer ID\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('array');",
+							"    responseData.forEach(function(task) {",
+							"        pm.expect(task.id).to.be.a('number').and.to.be.at.least(0);",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "696ed532-3edf-4961-9724-5173a6f7644a",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{id_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/tasks?page=0&size=300",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tasks"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "300"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{id_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e1789ad0-80c5-40e7-a0a7-ec83e3c7df4f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "787d61a7-2700-4b35-985d-d1663fbab294",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "e3279dcf-8aeb-40b5-827e-5f030f3dbce7",
+			"key": "baseUrl",
+			"value": "https://sqlverifier-live-6e21ca0ed768.herokuapp.com",
+			"type": "string"
+		},
+		{
+			"id": "e5418c67-1478-44da-b1b1-2257eea81bfa",
+			"key": "adminLogin",
+			"value": "admin_automation",
+			"type": "string"
+		},
+		{
+			"id": "ad441e13-34db-44a9-ae75-195d2b69cf4d",
+			"key": "adminPassword",
+			"value": "admin_automation",
+			"type": "string"
+		},
+		{
+			"id": "a1f608e6-6824-4837-a93a-a7dea08a6d42",
+			"key": "id_token",
+			"value": "{{id_token}}",
+			"type": "string"
+		},
+		{
+			"id": "eb14f0a2-d943-4222-8074-ff182ab5f54e",
+			"key": "id",
+			"value": ""
+		}
+	]
+}
