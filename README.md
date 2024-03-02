@@ -5,3 +5,5 @@ Repo with Postman tests
 
 [Tab Actions: :white_check_mark:](https://github.com/KsuKuper/sqlVerifier_hw4.3.1/actions)
 
+[![Last Build](https://github.com/KsuKuper/sqlVerifier_hw4.3/actions/workflows/blank.yml/badge.svg)](https://github.com/KsuKuper/sqlVerifier_hw4.3/actions/workflows/blank.yml)
+
